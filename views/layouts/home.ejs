@@ -1,0 +1,44 @@
+<% contentFor('body') %>
+
+<div class="container mt-5">
+
+  <form id="chat">
+    <div class="form-group">
+      <label for="name">Nome</label>
+      <input type="text" class="form-control" id="name">
+    </div>
+    <div class="form-group">
+      <div id="content" class="border" style="height: 10em; width: auto;"></div>
+    </div>
+    <div class="form-group">
+      <label for="message">Mensagem</label>
+      <input type="text" class="form-control" id="message">
+    </div>
+    <button type="button" id="enviar">Enviar</button>
+  </form>
+</div>
+
+<script src="socket.io/socket.io.js"></script>
+<script>
+  window.onload = () => {
+    const socket = io('http://localhost:3000');
+    const name = document.getElementById('name');
+    const content = document.getElementById('content');
+    const message = document.getElementById('message');
+    const enviar = document.getElementById('enviar');
+
+    enviar.addEventListener('click', () => {
+      let data = { 
+        'nome': name.value,
+        'mensagem': message.value 
+      };
+      socket.emit('mensagem', data);
+    })
+
+    socket.on('conteudo', data => {
+      let texto = `<br><strong>${data.nome}:</strong> ${data.mensagem}`;
+
+      content.innerHTML += texto;
+    })
+  }
+</script>
